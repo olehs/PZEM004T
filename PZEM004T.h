@@ -22,6 +22,9 @@ class PZEM004T
 public:
     PZEM004T(uint8_t receivePin, uint8_t transmitPin);
 
+    void setReadTimeout(unsigned long msec);
+    unsigned long readTimeout() {return _readTimeOut;}
+
     float voltage(const IPAddress &addr);
     float current(const IPAddress &addr);
     float power(const IPAddress &addr);
@@ -32,6 +35,8 @@ public:
 
 private:
     SoftwareSerial serial;
+
+    unsigned long _readTimeOut;
 
     void send(const IPAddress &addr, uint8_t cmd, uint8_t data = 0);
     bool recieve(uint8_t *data, uint8_t resp);
