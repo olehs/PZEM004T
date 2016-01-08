@@ -108,28 +108,31 @@ void PZEM004T::send(const IPAddress &addr, uint8_t cmd, uint8_t data)
 bool PZEM004T::recieve(uint8_t *data, uint8_t resp)
 {
     char buffer[RESPONSE_SIZE];
-    int len = 0;
 
-    unsigned long startTime = millis();
-    while((len < RESPONSE_SIZE) && (millis() - startTime < READ_TIMEOUT))
+    while(true)
     {
-        if(serial.available() > 0)
+        unsigned long startTime = millis();
+        int len = 0;
+        while((len < RESPONSE_SIZE) && (millis() - startTime < READ_TIMEOUT))
         {
-            char c = serial.read();
-            if(!c && !len)
-                continue; // skip 00 at startup
-            buffer[len++] = c;
+            if(serial.available() > 0)
+            {
+                char c = serial.read();
+                if(!c && !len)
+                    continue; // skip 00 at startup
+                buffer[len++] = c;
+            }
         }
+
+        if(len != RESPONSE_SIZE)
+            return false;
+
+        if(buffer[6] != (char)crc((uint8_t*)&buffer, len - 1))
+            return false;
+
+        if(buffer[0] == (char)resp)
+            break;
     }
-
-    if(len != RESPONSE_SIZE)
-        return false;
-
-    if(buffer[6] != (char)crc((uint8_t*)&buffer, len - 1))
-        return false;
-
-    if(buffer[0] != (char)resp)
-        return false;
 
     for(int i=0; i<RESPONSE_DATA_SIZE; i++)
         data[i] = (uint8_t)buffer[1 + i];
