@@ -39,7 +39,7 @@ private:
     unsigned long _readTimeOut;
 
     void send(const IPAddress &addr, uint8_t cmd, uint8_t data = 0);
-    bool recieve(uint8_t *data, uint8_t resp);
+    bool recieve(uint8_t resp, uint8_t *data = 0);
 
     uint8_t crc(uint8_t *data, uint8_t sz);
 };
