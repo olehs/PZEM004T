@@ -104,6 +104,9 @@ void PZEM004T::send(const IPAddress &addr, uint8_t cmd, uint8_t data)
     uint8_t *bytes = (uint8_t*)&pzem;
     pzem.crc = crc(bytes, sizeof(pzem) - 1);
 
+    while(serial.available())
+        serial.read();
+
     serial.write(bytes, sizeof(pzem));
 }
 
@@ -111,30 +114,27 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
 {
     uint8_t buffer[RESPONSE_SIZE];
 
-    while(true)
+    unsigned long startTime = millis();
+    uint8_t len = 0;
+    while((len < RESPONSE_SIZE) && (millis() - startTime < _readTimeOut))
     {
-        unsigned long startTime = millis();
-        uint8_t len = 0;
-        while((len < RESPONSE_SIZE) && (millis() - startTime < _readTimeOut))
+        if(serial.available() > 0)
         {
-            if(serial.available() > 0)
-            {
-                uint8_t c = (uint8_t)serial.read();
-                if(!c && !len)
-                    continue; // skip 00 at startup
-                buffer[len++] = c;
-            }
+            uint8_t c = (uint8_t)serial.read();
+            if(!c && !len)
+                continue; // skip 0 at startup
+            buffer[len++] = c;
         }
-
-        if(len != RESPONSE_SIZE)
-            return false;
-
-        if(buffer[6] != crc(buffer, len - 1))
-            return false;
-
-        if(buffer[0] == resp)
-            break;
     }
+
+    if(len != RESPONSE_SIZE)
+        return false;
+
+    if(buffer[6] != crc(buffer, len - 1))
+        return false;
+
+    if(buffer[0] != resp)
+        return false;
 
     if(data)
     {
