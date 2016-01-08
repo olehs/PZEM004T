@@ -1,0 +1,21 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+PZEM004T	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+voltage	KEYWORD2
+current	KEYWORD2
+power	KEYWORD2
+energy	KEYWORD2
+setAddress	KEYWORD2
+setPowerAlarm	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
