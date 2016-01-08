@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-#include "PZEM004T.h"
+#include <PZEM004T.h>
 
 PZEM004T pzem(10,11);  // RX,TX
 IPAddress ip(192,168,1,1);
@@ -12,7 +12,7 @@ void setup() {
 void loop() {
   float v = pzem.voltage(ip);
   if (v < 0.0) v = 0.0;
-  if(v >= 0.0){ Serial.print(v);Serial.print("V; "); }
+  Serial.print(v);Serial.print("V; ");
 
   float i = pzem.current(ip);
   if(i >= 0.0){ Serial.print(i);Serial.print("A; "); }
