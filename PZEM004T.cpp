@@ -25,10 +25,18 @@
 
 
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
-    : serial(receivePin, transmitPin)
+    : serial(0)
     , _readTimeOut(DEFAULT_READ_TIMEOUT)
 {
-    serial.begin(9600);
+    if(receivePin == 0 && transmitPin == 1)
+    {
+        Serial.begin(9600);
+    }
+    else
+    {
+        serial = new SoftwareSerial(receivePin, transmitPin);
+        serial->begin(9600);
+    }
 }
 
 void PZEM004T::setReadTimeout(unsigned long msec)
@@ -77,7 +85,7 @@ float PZEM004T::energy(const IPAddress &addr)
     if(!recieve(RESP_ENERGY, data))
         return -1.0;
 
-    return (data[0] << 16) + (data[1] << 8) + data[2];
+    return ((uint32_t)data[0] << 16) + ((uint16_t)data[1] << 8) + data[2];
 }
 
 bool PZEM004T::setAddress(const IPAddress &newAddr)
@@ -104,10 +112,20 @@ void PZEM004T::send(const IPAddress &addr, uint8_t cmd, uint8_t data)
     uint8_t *bytes = (uint8_t*)&pzem;
     pzem.crc = crc(bytes, sizeof(pzem) - 1);
 
-    while(serial.available())
-        serial.read();
+    if(serial)
+    {
+        while(serial->available())
+            serial->read();
 
-    serial.write(bytes, sizeof(pzem));
+        serial->write(bytes, sizeof(pzem));
+    }
+    else
+    {
+        while(Serial.available())
+            Serial.read();
+
+        Serial.write(bytes, sizeof(pzem));
+    }
 }
 
 bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
@@ -118,12 +136,25 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
     uint8_t len = 0;
     while((len < RESPONSE_SIZE) && (millis() - startTime < _readTimeOut))
     {
-        if(serial.available() > 0)
+        if(serial)
         {
-            uint8_t c = (uint8_t)serial.read();
-            if(!c && !len)
-                continue; // skip 0 at startup
-            buffer[len++] = c;
+            if(serial->available() > 0)
+            {
+                uint8_t c = (uint8_t)serial->read();
+                if(!c && !len)
+                    continue; // skip 0 at startup
+                buffer[len++] = c;
+            }
+        }
+        else
+        {
+            if(Serial.available() > 0)
+            {
+                uint8_t c = (uint8_t)Serial.read();
+                if(!c && !len)
+                    continue; // skip 0 at startup
+                buffer[len++] = c;
+            }
         }
     }
 

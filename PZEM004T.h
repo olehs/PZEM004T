@@ -34,7 +34,7 @@ public:
     bool setPowerAlarm(const IPAddress &addr, uint8_t threshold);
 
 private:
-    SoftwareSerial serial;
+    SoftwareSerial *serial;
 
     unsigned long _readTimeOut;
 
