@@ -22,6 +22,7 @@ class PZEM004T
 public:
     PZEM004T(uint8_t receivePin, uint8_t transmitPin);
     PZEM004T(HardwareSerial *port);
+    ~PZEM004T();
 
     void setReadTimeout(unsigned long msec);
     unsigned long readTimeout() {return _readTimeOut;}
@@ -38,6 +39,7 @@ private:
     Stream *serial;
 
     unsigned long _readTimeOut;
+    bool _isSoft;
 
     void send(const IPAddress &addr, uint8_t cmd, uint8_t data = 0);
     bool recieve(uint8_t resp, uint8_t *data = 0);
