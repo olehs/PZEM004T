@@ -21,6 +21,7 @@ class PZEM004T
 {
 public:
     PZEM004T(uint8_t receivePin, uint8_t transmitPin);
+    PZEM004T(HardwareSerial *port);
 
     void setReadTimeout(unsigned long msec);
     unsigned long readTimeout() {return _readTimeOut;}
@@ -34,7 +35,7 @@ public:
     bool setPowerAlarm(const IPAddress &addr, uint8_t threshold);
 
 private:
-    SoftwareSerial *serial;
+    Stream *serial;
 
     unsigned long _readTimeOut;
 

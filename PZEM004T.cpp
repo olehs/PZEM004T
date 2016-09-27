@@ -21,22 +21,25 @@
 #define RESPONSE_SIZE sizeof(PZEMCommand)
 #define RESPONSE_DATA_SIZE RESPONSE_SIZE - 2
 
-#define DEFAULT_READ_TIMEOUT 1000
+#define PZEM_BAUD_RATE 9600
+#define PZEM_DEFAULT_READ_TIMEOUT 1000
+
+#define PZEM_ERROR_VALUE -1.0
 
 
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
     : serial(0)
-    , _readTimeOut(DEFAULT_READ_TIMEOUT)
+    , _readTimeOut(PZEM_DEFAULT_READ_TIMEOUT)
 {
-    if(receivePin == 0 && transmitPin == 1)
-    {
-        Serial.begin(9600);
-    }
-    else
-    {
-        serial = new SoftwareSerial(receivePin, transmitPin);
-        serial->begin(9600);
-    }
+    SoftwareSerial *port = new SoftwareSerial(receivePin, transmitPin);
+    port->begin(PZEM_BAUD_RATE);
+    this->serial = port;
+}
+
+PZEM004T::PZEM004T(HardwareSerial *port)
+{
+    port->begin(PZEM_BAUD_RATE);
+    this->serial = port;
 }
 
 void PZEM004T::setReadTimeout(unsigned long msec)
@@ -50,7 +53,7 @@ float PZEM004T::voltage(const IPAddress &addr)
 
     send(addr, PZEM_VOLTAGE);
     if(!recieve(RESP_VOLTAGE, data))
-        return -1.0;
+        return PZEM_ERROR_VALUE;
 
     return (data[0] << 8) + data[1] + (data[2] / 10.0);
 }
@@ -61,7 +64,7 @@ float PZEM004T::current(const IPAddress &addr)
 
     send(addr, PZEM_CURRENT);
     if(!recieve(RESP_CURRENT, data))
-        return -1.0;
+        return PZEM_ERROR_VALUE;
 
     return (data[0] << 8) + data[1] + (data[2] / 100.0);
 }
@@ -72,7 +75,7 @@ float PZEM004T::power(const IPAddress &addr)
 
     send(addr, PZEM_POWER);
     if(!recieve(RESP_POWER, data))
-        return -1.0;
+        return PZEM_ERROR_VALUE;
 
     return (data[0] << 8) + data[1];
 }
@@ -83,7 +86,7 @@ float PZEM004T::energy(const IPAddress &addr)
 
     send(addr, PZEM_ENERGY);
     if(!recieve(RESP_ENERGY, data))
-        return -1.0;
+        return PZEM_ERROR_VALUE;
 
     return ((uint32_t)data[0] << 16) + ((uint16_t)data[1] << 8) + data[2];
 }
@@ -112,20 +115,10 @@ void PZEM004T::send(const IPAddress &addr, uint8_t cmd, uint8_t data)
     uint8_t *bytes = (uint8_t*)&pzem;
     pzem.crc = crc(bytes, sizeof(pzem) - 1);
 
-    if(serial)
-    {
-        while(serial->available())
-            serial->read();
+    while(serial->available())
+        serial->read();
 
-        serial->write(bytes, sizeof(pzem));
-    }
-    else
-    {
-        while(Serial.available())
-            Serial.read();
-
-        Serial.write(bytes, sizeof(pzem));
-    }
+    serial->write(bytes, sizeof(pzem));
 }
 
 bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
@@ -136,25 +129,12 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
     uint8_t len = 0;
     while((len < RESPONSE_SIZE) && (millis() - startTime < _readTimeOut))
     {
-        if(serial)
+        if(serial->available() > 0)
         {
-            if(serial->available() > 0)
-            {
-                uint8_t c = (uint8_t)serial->read();
-                if(!c && !len)
-                    continue; // skip 0 at startup
-                buffer[len++] = c;
-            }
-        }
-        else
-        {
-            if(Serial.available() > 0)
-            {
-                uint8_t c = (uint8_t)Serial.read();
-                if(!c && !len)
-                    continue; // skip 0 at startup
-                buffer[len++] = c;
-            }
+            uint8_t c = (uint8_t)serial->read();
+            if(!c && !len)
+                continue; // skip 0 at startup
+            buffer[len++] = c;
         }
     }
 
