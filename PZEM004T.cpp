@@ -28,11 +28,11 @@
 
 
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
-    : _readTimeOut(PZEM_DEFAULT_READ_TIMEOUT)
 {
     SoftwareSerial *port = new SoftwareSerial(receivePin, transmitPin);
     port->begin(PZEM_BAUD_RATE);
     this->serial = port;
+    this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = true;
 }
 
@@ -40,6 +40,7 @@ PZEM004T::PZEM004T(HardwareSerial *port)
 {
     port->begin(PZEM_BAUD_RATE);
     this->serial = port;
+    this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = false;
 }
 
