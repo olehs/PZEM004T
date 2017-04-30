@@ -133,6 +133,9 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
 {
     uint8_t buffer[RESPONSE_SIZE];
 
+    if(_isSoft)
+        ((SoftwareSerial *)serial)->listen();
+
     unsigned long startTime = millis();
     uint8_t len = 0;
     while((len < RESPONSE_SIZE) && (millis() - startTime < _readTimeOut))
