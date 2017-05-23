@@ -1,0 +1,30 @@
+{
+"name": "PZEM004T",
+"frameworks": "arduino",
+"keywords": "peacefair, pzem, powermeter",
+"description": "Enables communication with Peacefair PZEM-004T Energy monitor",
+"url": "https://github.com/olehs/PZEM004T",
+"authors": [
+    {
+        "name": "Oleg Sokolov"
+    }
+],
+"repository":
+{
+    "type": "git",
+    "url": "https://github.com/olehs/PZEM004T.git"
+},
+"platforms": [
+    "atmelavr",
+    "espressif8266"
+],
+"version": "1.0.0",
+"dependencies":
+[
+    {
+	"name": "EspSoftwareSerial",
+	"version": ">=3.2.0",
+	"platforms": "espressif8266"
+    }
+]
+}
