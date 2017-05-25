@@ -15,7 +15,7 @@ void setup() {
 
 void loop() {
   float v = pzem.voltage(ip);
-  if (v < 0.0) {Serial.print(v);Serial.print("V; "); }
+  if (v > 0.0) {Serial.print(v);Serial.print("V; "); }
 
   float i = pzem.current(ip);
   if(i >= 0.0){ Serial.print(i);Serial.print("A; "); }
