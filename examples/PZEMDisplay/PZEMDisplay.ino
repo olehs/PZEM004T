@@ -1,6 +1,10 @@
 #include <SoftwareSerial.h> // Arduino IDE <1.6.6
 #include <PZEM004T.h>
 
+
+//https://www.arduino.cc/en/Tutorial/SoftwareSerialExample
+//* RX is digital pin 10 (connect to TX of other device)
+//* TX is digital pin 11 (connect to RX of other device)
 PZEM004T pzem(10,11);  // RX,TX
 IPAddress ip(192,168,1,1);
 
@@ -11,8 +15,7 @@ void setup() {
 
 void loop() {
   float v = pzem.voltage(ip);
-  if (v < 0.0) v = 0.0;
-  Serial.print(v);Serial.print("V; ");
+  if (v < 0.0) {Serial.print(v);Serial.print("V; "); }
 
   float i = pzem.current(ip);
   if(i >= 0.0){ Serial.print(i);Serial.print("A; "); }
@@ -25,5 +28,5 @@ void loop() {
 
   Serial.println();
 
-//  delay(1000);
+  //delay(1000);
 }
