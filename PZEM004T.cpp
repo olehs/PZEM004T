@@ -147,6 +147,7 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
                 continue; // skip 0 at startup
             buffer[len++] = c;
         }
+        yield();	// do background netw tasks while blocked for IO (prevents ESP watchdog trigger)
     }
 
     if(len != RESPONSE_SIZE)
