@@ -133,8 +133,8 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
 {
     uint8_t buffer[RESPONSE_SIZE];
 
-    if(_isSoft)
-        ((SoftwareSerial *)serial)->listen();
+    //if(_isSoft)
+        //((SoftwareSerial *)serial)->listen();
 
     unsigned long startTime = millis();
     uint8_t len = 0;
@@ -147,7 +147,7 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
                 continue; // skip 0 at startup
             buffer[len++] = c;
         }
-        yield();	// do background netw tasks while blocked for IO (prevents ESP watchdog trigger)
+    yield();	// do background netw tasks while blocked for IO (prevents ESP watchdog trigger)
     }
 
     if(len != RESPONSE_SIZE)
@@ -175,3 +175,14 @@ uint8_t PZEM004T::crc(uint8_t *data, uint8_t sz)
         crc += *data++;
     return (uint8_t)(crc & 0xFF);
 }
+
+
+PZEM004T::meter_t& PZEM004T::fetchAll(const IPAddress &addr, meter_t &data)
+{
+    data.voltage = voltage(addr);
+    data.current = current(addr);
+    data.power   = power(addr);
+    data.energy  = energy(addr);
+    return data;
+}
+

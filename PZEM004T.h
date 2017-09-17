@@ -17,6 +17,8 @@ struct PZEMCommand {
     uint8_t crc;
 };
 
+struct meter_t;
+
 class PZEM004T
 {
 public:
@@ -34,6 +36,22 @@ public:
 
     bool setAddress(const IPAddress &newAddr);
     bool setPowerAlarm(const IPAddress &addr, uint8_t threshold);
+
+    struct meter_t {
+	float voltage = 0.0f;
+	float current = 0.0f;
+	float power   = 0.0f;
+	float energy  = 0.0f;
+	inline float pf() {		// calculate power-factor
+	    if (voltage == 0 || current == 0) return 0.0f;
+	    float pf = power / voltage / current;
+	    if (pf > 1) return 1.0f;
+	    return pf;
+	}
+    };
+
+    // pull all data from meter to struct provided
+    meter_t &fetchAll(const IPAddress &addr, meter_t &data);
 
 private:
     Stream *serial;
