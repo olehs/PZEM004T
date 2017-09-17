@@ -14,6 +14,7 @@ power	KEYWORD2
 energy	KEYWORD2
 setAddress	KEYWORD2
 setPowerAlarm	KEYWORD2
+fetchAll	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
