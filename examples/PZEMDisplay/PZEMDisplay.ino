@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h> // Arduino IDE <1.6.6
 #include <PZEM004T.h>
 
-PZEM004T pzem(10,11);  // RX,TX
+PZEM004T pzem(10,11);  // (RX,TX) connect to TX,RX of PZEM
 IPAddress ip(192,168,1,1);
 
 void setup() {
