@@ -7,7 +7,11 @@
 #include "WProgram.h"
 #endif
 
+#if not (defined(ESP32) || defined(ARDUINO_ARCH_ESP32))
+#define PZEM004_SOFTSERIAL
 #include <SoftwareSerial.h>
+#endif
+
 #include <IPAddress.h>
 
 struct PZEMCommand {

@@ -26,7 +26,7 @@
 
 #define PZEM_ERROR_VALUE -1.0
 
-
+#ifdef PZEM004_SOFTSERIAL    
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
 {
     SoftwareSerial *port = new SoftwareSerial(receivePin, transmitPin);
@@ -35,6 +35,7 @@ PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
     this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = true;
 }
+#endif
 
 PZEM004T::PZEM004T(HardwareSerial *port)
 {
@@ -133,8 +134,10 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
 {
     uint8_t buffer[RESPONSE_SIZE];
 
+#ifdef PZEM004_SOFTSERIAL    
     if(_isSoft)
         ((SoftwareSerial *)serial)->listen();
+#endif
 
     unsigned long startTime = millis();
     uint8_t len = 0;
