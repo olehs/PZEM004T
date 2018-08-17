@@ -22,9 +22,6 @@
 #define RESPONSE_DATA_SIZE RESPONSE_SIZE - 2
 
 #define PZEM_BAUD_RATE 9600
-#define PZEM_DEFAULT_READ_TIMEOUT 1000
-
-#define PZEM_ERROR_VALUE -1.0
 
 #ifdef PZEM004_SOFTSERIAL    
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
@@ -32,7 +29,6 @@ PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
     SoftwareSerial *port = new SoftwareSerial(receivePin, transmitPin);
     port->begin(PZEM_BAUD_RATE);
     this->serial = port;
-    this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = true;
 }
 #endif
@@ -41,7 +37,6 @@ PZEM004T::PZEM004T(HardwareSerial *port)
 {
     port->begin(PZEM_BAUD_RATE);
     this->serial = port;
-    this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = false;
 }
 
