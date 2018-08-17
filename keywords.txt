@@ -14,6 +14,8 @@ power	KEYWORD2
 energy	KEYWORD2
 setAddress	KEYWORD2
 setPowerAlarm	KEYWORD2
+setReadTimeout	KEYWORD2
+readTimeout		KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
