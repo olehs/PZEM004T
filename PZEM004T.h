@@ -7,8 +7,13 @@
 #include "WProgram.h"
 #endif
 
-#if not (defined(ESP32) || defined(ARDUINO_ARCH_ESP32) || defined(PZEM004_NO_SWSERIAL))
+// #define PZEM004_NO_SWSERIAL
+
+#if (not defined(PZEM004_NO_SWSERIAL)) && (defined(__AVR__) || defined(ESP8266))
 #define PZEM004_SOFTSERIAL
+#endif
+
+#if defined(PZEM004_SOFTSERIAL)
 #include <SoftwareSerial.h>
 #endif
 

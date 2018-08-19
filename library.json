@@ -13,12 +13,8 @@
         "type": "git",
         "url": "https://github.com/olehs/PZEM004T.git"
     },
-    "platforms": [
-        "atmelavr",
-        "espressif8266",
-        "expressif32"
-    ],
-    "version": "1.1.1",
+    "platforms": "*",
+    "version": "1.1.2",
     "dependencies": [
         {
             "name": "EspSoftwareSerial",
