@@ -33,6 +33,13 @@ PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
 }
 #endif
 
+PZEM004T::PZEM004T(SoftwareSerial *port)
+{
+    port->begin(PZEM_BAUD_RATE);
+    this->serial = port;
+    this->_isSoft = true;
+}
+
 PZEM004T::PZEM004T(HardwareSerial *port)
 {
     port->begin(PZEM_BAUD_RATE);
