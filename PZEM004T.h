@@ -33,6 +33,7 @@ class PZEM004T
 {
 public:
     PZEM004T(uint8_t receivePin, uint8_t transmitPin);
+    PZEM004T(SoftWareSerial *port);
     PZEM004T(HardwareSerial *port);
     ~PZEM004T();
 
