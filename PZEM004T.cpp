@@ -22,25 +22,21 @@
 #define RESPONSE_DATA_SIZE RESPONSE_SIZE - 2
 
 #define PZEM_BAUD_RATE 9600
-#define PZEM_DEFAULT_READ_TIMEOUT 1000
 
-#define PZEM_ERROR_VALUE -1.0
-
-
+#ifdef PZEM004_SOFTSERIAL    
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
 {
     SoftwareSerial *port = new SoftwareSerial(receivePin, transmitPin);
     port->begin(PZEM_BAUD_RATE);
     this->serial = port;
-    this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = true;
 }
+#endif
 
 PZEM004T::PZEM004T(HardwareSerial *port)
 {
     port->begin(PZEM_BAUD_RATE);
     this->serial = port;
-    this->_readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
     this->_isSoft = false;
 }
 
@@ -133,8 +129,10 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
 {
     uint8_t buffer[RESPONSE_SIZE];
 
+#ifdef PZEM004_SOFTSERIAL    
     if(_isSoft)
         ((SoftwareSerial *)serial)->listen();
+#endif
 
     unsigned long startTime = millis();
     uint8_t len = 0;
@@ -147,6 +145,7 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
                 continue; // skip 0 at startup
             buffer[len++] = c;
         }
+        yield();	// do background netw tasks while blocked for IO (prevents ESP watchdog trigger)
     }
 
     if(len != RESPONSE_SIZE)

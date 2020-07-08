@@ -7,8 +7,20 @@
 #include "WProgram.h"
 #endif
 
+// #define PZEM004_NO_SWSERIAL
+
+#if (not defined(PZEM004_NO_SWSERIAL)) && (defined(__AVR__) || defined(ESP8266))
+#define PZEM004_SOFTSERIAL
+#endif
+
+#if defined(PZEM004_SOFTSERIAL)
 #include <SoftwareSerial.h>
+#endif
+
 #include <IPAddress.h>
+
+#define PZEM_DEFAULT_READ_TIMEOUT 1000
+#define PZEM_ERROR_VALUE -1.0
 
 struct PZEMCommand {
     uint8_t command;
@@ -38,8 +50,8 @@ public:
 private:
     Stream *serial;
 
-    unsigned long _readTimeOut;
     bool _isSoft;
+    unsigned long _readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
 
     void send(const IPAddress &addr, uint8_t cmd, uint8_t data = 0);
     bool recieve(uint8_t resp, uint8_t *data = 0);
