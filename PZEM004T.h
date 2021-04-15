@@ -48,6 +48,12 @@ public:
     bool setPowerAlarm(const IPAddress &addr, uint8_t threshold);
 
 private:
+
+#ifdef PZEM004_SOFTSERIAL    
+    // Stream has no virtual dtor, so keep the pointer
+    SoftwareSerial *swserial = nullptr;
+#endif
+
     Stream *serial;
 
     bool _isSoft;
