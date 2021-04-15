@@ -23,12 +23,12 @@
 
 #define PZEM_BAUD_RATE 9600
 
-#ifdef PZEM004_SOFTSERIAL    
+#ifdef PZEM004_SOFTSERIAL
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
 {
-    SoftwareSerial *port = new SoftwareSerial(receivePin, transmitPin);
+    SoftwareSerial *swserial = new SoftwareSerial(receivePin, transmitPin);
     port->begin(PZEM_BAUD_RATE);
-    this->serial = port;
+    this->serial = swserial;
     this->_isSoft = true;
 }
 #endif
@@ -42,8 +42,10 @@ PZEM004T::PZEM004T(HardwareSerial *port)
 
 PZEM004T::~PZEM004T()
 {
+#ifdef PZEM004_SOFTSERIAL
     if(_isSoft)
-        delete this->serial;
+        delete swserial;
+#endif
 }
 
 void PZEM004T::setReadTimeout(unsigned long msec)
@@ -112,7 +114,7 @@ void PZEM004T::send(const IPAddress &addr, uint8_t cmd, uint8_t data)
     PZEMCommand pzem;
 
     pzem.command = cmd;
-    for(int i=0; i<sizeof(pzem.addr); i++)
+    for(size_t i=0; i<sizeof(pzem.addr); i++)
         pzem.addr[i] = addr[i];
     pzem.data = data;
 
@@ -159,7 +161,7 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
 
     if(data)
     {
-        for(int i=0; i<RESPONSE_DATA_SIZE; i++)
+        for(size_t i=0; i<RESPONSE_DATA_SIZE; i++)
             data[i] = buffer[1 + i];
     }
 
