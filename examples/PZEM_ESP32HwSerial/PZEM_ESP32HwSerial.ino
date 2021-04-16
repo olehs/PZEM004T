@@ -7,6 +7,11 @@
 
 HardwareSerial PzemSerial2(2);     // Use hwserial UART2 at pins IO-16 (RX2) and IO-17 (TX2)
 PZEM004T pzem(&PzemSerial2);
+
+/*
+PZEM004T pzem(&PzemSerial2, 22, 23);  // Use hwserial UART2 remapped to custom pins IO-22 (RX) and IO-23 (TX)
+*/
+
 IPAddress ip(192,168,1,1);
 
 void setup() {
