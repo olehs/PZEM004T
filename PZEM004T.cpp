@@ -49,7 +49,7 @@ PZEM004T::PZEM004T(HardwareSerial *port)
  */
 #ifdef ESP32
 PZEM004T::PZEM004T(HardwareSerial* port, uint8_t rxpin, uint8_t txpin){
-    port->begin(PZEM_BAUD_RATE, SERIAL_8N1, txpin, rxpin);
+    port->begin(PZEM_BAUD_RATE, SERIAL_8N1, rxpin, txpin);
     this->serial = port;
     this->_isSoft = false;
 }
