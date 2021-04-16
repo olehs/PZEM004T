@@ -34,6 +34,17 @@ class PZEM004T
 public:
     PZEM004T(uint8_t receivePin, uint8_t transmitPin);
     PZEM004T(HardwareSerial *port);
+
+    /**
+     * @brief Hardware serial constructor with custom pin mapping (ESP32)
+     *
+     * @param port Hardware serial object (or port number as uint)
+     * @param rxpin gpio pin to map rx
+     * @param txpin gpio pin to map tx
+     */
+#ifdef ESP32
+    PZEM004T(HardwareSerial* port, uint8_t rxpin, uint8_t txpin);
+#endif
     ~PZEM004T();
 
     void setReadTimeout(unsigned long msec);

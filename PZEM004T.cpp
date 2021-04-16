@@ -40,6 +40,22 @@ PZEM004T::PZEM004T(HardwareSerial *port)
     this->_isSoft = false;
 }
 
+/**
+ * @brief Hardware serial constructor with custom pin mapping (ESP32)
+ *
+ * @param port Hardware serial object (or port number as uint)
+ * @param rxpin gpio pin to map rx
+ * @param txpin gpio pin to map tx
+ */
+#ifdef ESP32
+PZEM004T::PZEM004T(HardwareSerial* port, uint8_t rxpin, uint8_t txpin){
+    port->begin(PZEM_BAUD_RATE, SERIAL_8N1, txpin, rxpin);
+    this->serial = port;
+    this->_isSoft = false;
+}
+#endif
+
+
 PZEM004T::~PZEM004T()
 {
 #ifdef PZEM004_SOFTSERIAL
