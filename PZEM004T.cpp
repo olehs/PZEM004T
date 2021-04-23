@@ -27,7 +27,7 @@
 PZEM004T::PZEM004T(uint8_t receivePin, uint8_t transmitPin)
 {
     SoftwareSerial *swserial = new SoftwareSerial(receivePin, transmitPin);
-    port->begin(PZEM_BAUD_RATE);
+    swserial->begin(PZEM_BAUD_RATE);
     this->serial = swserial;
     this->_isSoft = true;
 }
