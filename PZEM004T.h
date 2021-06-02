@@ -47,13 +47,13 @@ public:
 #endif
     ~PZEM004T();
 
-    void setReadTimeout(unsigned long msec);
-    unsigned long readTimeout() {return _readTimeOut;}
+    void setReadTimeout(uint32_t msec);
+    uint32_t readTimeout() {return _readTimeOut;}
 
     float voltage(const IPAddress &addr);
     float current(const IPAddress &addr);
-    float power(const IPAddress &addr);
-    float energy(const IPAddress &addr);
+    int32_t power(const IPAddress &addr);
+    int32_t energy(const IPAddress &addr);
 
     bool setAddress(const IPAddress &newAddr);
     bool setPowerAlarm(const IPAddress &addr, uint8_t threshold);
@@ -68,7 +68,7 @@ private:
     Stream *serial;
 
     bool _isSoft;
-    unsigned long _readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
+    uint32_t _readTimeOut = PZEM_DEFAULT_READ_TIMEOUT;
 
     void send(const IPAddress &addr, uint8_t cmd, uint8_t data = 0);
     bool recieve(uint8_t resp, uint8_t *data = 0);

@@ -64,7 +64,7 @@ PZEM004T::~PZEM004T()
 #endif
 }
 
-void PZEM004T::setReadTimeout(unsigned long msec)
+void PZEM004T::setReadTimeout(uint32_t msec)
 {
     _readTimeOut = msec;
 }
@@ -91,7 +91,7 @@ float PZEM004T::current(const IPAddress &addr)
     return (data[0] << 8) + data[1] + (data[2] / 100.0);
 }
 
-float PZEM004T::power(const IPAddress &addr)
+int32_t PZEM004T::power(const IPAddress &addr)
 {
     uint8_t data[RESPONSE_DATA_SIZE];
 
@@ -102,7 +102,7 @@ float PZEM004T::power(const IPAddress &addr)
     return (data[0] << 8) + data[1];
 }
 
-float PZEM004T::energy(const IPAddress &addr)
+int32_t PZEM004T::energy(const IPAddress &addr)
 {
     uint8_t data[RESPONSE_DATA_SIZE];
 
@@ -152,7 +152,7 @@ bool PZEM004T::recieve(uint8_t resp, uint8_t *data)
         ((SoftwareSerial *)serial)->listen();
 #endif
 
-    unsigned long startTime = millis();
+    uint32_t startTime = millis();
     uint8_t len = 0;
     while((len < RESPONSE_SIZE) && (millis() - startTime < _readTimeOut))
     {
